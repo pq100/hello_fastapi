@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
+
 # sqlalchemy
 # 파이썬용 ORM 라이브러리
 # sqlalchemy.org
@@ -97,6 +98,18 @@ def readone_sj(sjno: int, db: Session = Depends(get_db)):
     if sungjuk:
         db.delete(sungjuk)
         db.commit()
+    return sungjuk
+
+
+# 먼저, 삭제할 학생 데이터가 있는지 확인한 후 수정 실행
+@app.put('/sj', response_model=Optional[SungjukModel])
+def update_sj(sj: int, db: Session = Depends(get_db)):
+    sungjuk = db.query(Sungjuk).filter(Sungjuk.sjno == sj.sjno).first()
+    if sungjuk:
+        for key, val in sj.dict().items():
+            setattr(sungjuk, key, val)
+        db.commit()
+        db.refresh(sungjuk)
     return sungjuk
 
 
