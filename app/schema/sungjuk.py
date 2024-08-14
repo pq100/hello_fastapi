@@ -3,12 +3,14 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-
 # pydnatic 모델
-class SungjukModel(BaseModel):
+class NewSungjukModel(BaseModel):
     sjno: int
     name: str
     kor: int
     eng: int
     mat: int
+
+class SungjukModel(NewSungjukModel):
+    sjno: int
     regdate: datetime
